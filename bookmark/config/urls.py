@@ -19,6 +19,8 @@ from django.urls import path
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
 
+from bookmark.bookmark import views
+
 premier_league = [
     {'team': 'Arsenal', 'manager': 'Arteta'},
     {'team': 'Man city', 'manager': 'Pep'},
@@ -68,4 +70,6 @@ urlpatterns = [
     path('language/python/', python),
     path('league/', league),
     path('league/<int:index>/', league_detail),
+    path('bookmark/', views.bookmark_list),
+    path('bookmark/<int:pk>', views.bookmark_detail),
 ]
