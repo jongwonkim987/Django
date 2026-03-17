@@ -3,7 +3,7 @@ from django.http import Http404
 from todo.models import Todo
 
 def todo_list(request):
-    todo_list = Todo.objects.all().values_list('id', 'titile')
+    todo_list = Todo.objects.all().values_list('id', 'title')
     result = []
     for todo in todo_list:
         result.append({'id': todo[0], 'title': todo[1]})
