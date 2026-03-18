@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # own app
     'todo',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -117,3 +118,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# login / logout
+LOGIN_REDIRECT_URL = 'todo/'
+LOGOUT_REDIRECT_URL = 'accounts/login'

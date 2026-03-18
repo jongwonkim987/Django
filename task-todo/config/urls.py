@@ -21,4 +21,5 @@ from django.urls import path, include  # include 추가
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('todo/', include('todo.urls')),  # todo/urls.py로 위임
+    path('accounts/', include('users.urls')),
 ]
