@@ -17,10 +17,10 @@ def todo_list(request):
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     context = {
-        'page': page,
+        'page_obj': page,
     }
 
-    return render(request, 'todo_list.html', context)
+    return render(request, 'todo/todo_list.html', context)
 
 @login_required()
 def todo_info(request, todo_id):
@@ -28,7 +28,7 @@ def todo_info(request, todo_id):
     context = {
         'todo': todo.__dict__,
     }
-    return render(request, 'todo_info.html', context)
+    return render(request, 'todo/todo_info.html', context)
 
 @login_required()
 def todo_create(request):
