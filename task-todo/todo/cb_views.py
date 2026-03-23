@@ -13,9 +13,9 @@ class TodoListView(LoginRequiredMixin, ListView):
     ordering = ['-created_at']
 
     def get_queryset(self):
-        queryset = super().get_queryset().filter(user=self.request.user)
-        if self.request.user.is_superuser:
-            queryset = super().get_queryset()
+        queryset = super().get_queryset()
+        if not self.request.user.is_superuser:
+            queryset = queryset.filter(user=self.request.user)
 
         q = self.request.GET.get('q')
         if q:
@@ -35,7 +35,8 @@ class TodoDetailView(LoginRequiredMixin, DetailView):
         return obj
 
     def get_context_data(self, **kwargs):
-        context = {'todo': self.object.__dict__}
+        context = super().get_context_data(**kwargs)
+        context['todo'] = self.object.__dict__
         return context
 
 

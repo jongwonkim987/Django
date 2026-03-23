@@ -121,4 +121,4 @@ STATIC_URL = 'static/'
 
 # login / logout
 LOGIN_REDIRECT_URL = '/todo/cbv/'
-LOGOUT_REDIRECT_URL = '/accounts/login'
+LOGOUT_REDIRECT_URL = '/accounts/login/'

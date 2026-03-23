@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import login as django_login
+from django.contrib.auth import login as django_login, logout as django_logout
 
 def signup(request):
     form = UserCreationForm(request.POST or None)
@@ -20,3 +20,7 @@ def login(request):
 
     context = {'form': form}
     return render(request, 'registration/login.html', context)
+
+def logout(request):
+    django_logout(request)
+    return redirect(settings.LOGOUT_REDIRECT_URL)
