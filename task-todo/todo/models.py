@@ -11,5 +11,12 @@ class Todo(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
+class Comment(models.Model):
+    todo = models.ForeignKey(Todo, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField(max_length=300)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
-        return self.title
+        return f'{self.user}: {self.message}'

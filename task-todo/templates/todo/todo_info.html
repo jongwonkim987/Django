@@ -1,87 +1,102 @@
 <!-- todo / todo_info.html -->
-
 {% extends 'todo/base.html' %}
+
 {% block content %}
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 20px;
-    }
-    .container {
-        max-width: 600px;
-        margin: auto;
-        background: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-        text-align: center;
-        color: #333;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    th, td {
-        padding: 10px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
-    th {
-        background: #f0f0f0;
-    }
-    a {
-        text-decoration: none;
-        color: #333;
-    }
-    /* 버튼 스타일 */
-    .button-group {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        margin-top: 20px;
-        padding: 10px 20px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-    }
+<div class="container mt-4" style="max-width: 700px;">
 
-    .button-group:hover {
-        background-color: #0056b3;
-    }
-
-    #delete-button {
-        background-color: #ff1122;
-    }
-    #delete-button:hover {
-        background-color: #cc1122;
-    }
-</style>
-<div class="container">
-    <div style="display: flex; justify-content: space-between">
-        <h1>{{ todo.title }}</h1>
-        <div style="display: flex">
-            <button class="button-group" onclick="location.href='{% url 'cbv_todo_update' todo.id %}'">수정하기</button>
-            <form method="post" action="{% url 'cbv_todo_delete' todo.id %}">
-                {% csrf_token %}
-                <button id="delete-button"type="submit" class="button-group">삭제하기</button>
-            </form>
+    <!-- Todo 상세 -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">{{ todo.title }}</h4>
+            <div class="d-flex gap-2">
+                <a href="{% url 'cbv_todo_update' todo.id %}" class="btn btn-warning btn-sm">수정하기</a>
+                <form method="POST" action="{% url 'cbv_todo_delete' todo.id %}" class="m-0">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">삭제하기</button>
+                </form>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-bordered mb-0">
+                {% for key, value in todo.items %}
+                    <!-- todo.__dict__ 에서 사용하지 않을 값들은 if 조건절로 배제 -->
+                    {% if key != 'title' and key != 'id' and key != 'user_id' and key != '_state' %}
+                        <tr>
+                            <th class="bg-light w-25">{{ key }}</th>
+                            <td>{{ value }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
         </div>
     </div>
-    <table>
-        {% for key, value in todo.items %}
-		        <!-- todo.__dict__ 에서 사용하지 않을 값들은 if 조건절로 배제해줍니다. -->
-            {% if key != 'title' and key != 'id' and key != 'user_id' and key != '_state'%}
-                <tr>
-                    <th>{{ key }}</th>
-                    <td>{{ value }}</td>
-                </tr>
-            {% endif %}
+
+    <!-- 댓글 섹션 -->
+    <div id="comments">
+        <h5 class="mb-3">댓글</h5>
+
+        <!-- 댓글 작성 폼 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="POST" action="{% url 'cbv_comment_create' todo.id %}">
+                    {% csrf_token %}
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold">{{ comment_form.message.label }}</label>
+                        {{ comment_form.message }}
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">댓글 작성</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 댓글 목록 -->
+        {% for comment in page_obj %}
+            <div class="card mb-2">
+                <div class="card-body pb-2">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong>{{ comment.user.username }}</strong>
+                            <small class="text-muted ms-2">{{ comment.created_at|date:"Y-m-d H:i" }}</small>
+                            <p class="mb-1 mt-1">{{ comment.message }}</p>
+                        </div>
+
+                        {% if comment.user == request.user or request.user.is_superuser %}
+                            <div class="d-flex gap-1 ms-3 flex-shrink-0">
+                                <!-- 수정 버튼 (Bootstrap collapse) -->
+                                <button class="btn btn-outline-warning btn-sm"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#edit-form-{{ comment.pk }}">
+                                    수정
+                                </button>
+                                <!-- 삭제 버튼 (바로 삭제) -->
+                                <form method="POST" action="{% url 'cbv_comment_delete' comment.pk %}" class="m-0">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">삭제</button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- 수정 폼 (collapse 토글) -->
+                    {% if comment.user == request.user or request.user.is_superuser %}
+                        <div class="collapse mt-2" id="edit-form-{{ comment.pk }}">
+                            <form method="POST" action="{% url 'cbv_comment_update' comment.pk %}">
+                                {% csrf_token %}
+                                <textarea name="message" class="form-control mb-2" rows="2">{{ comment.message }}</textarea>
+                                <button type="submit" class="btn btn-primary btn-sm">저장</button>
+                            </form>
+                        </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-muted text-center">등록된 댓글이 없습니다.</p>
         {% endfor %}
-    </table>
+
+        <!-- 댓글 페이지네이션 (#comments 앵커 포함) -->
+        {% include 'todo/pagination.html' with anchor='#comments' %}
+    </div>
+
 </div>
 {% endblock %}
-
