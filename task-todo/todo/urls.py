@@ -20,7 +20,7 @@ urlpatterns = [
     path('cbv/<int:pk>/delete/', TodoDeleteView.as_view(), name='cbv_todo_delete'),
 
     # Comment CBV
-    path('cbv/<int:todo_id>/comment/create/', CommentCreateView.as_view(), name='cbv_comment_create'),
-    path('cbv/comment/<int:pk>/update/', CommentUpdateView.as_view(), name='cbv_comment_update'),
-    path('cbv/comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='cbv_comment_delete'),
+    path('comment/<int:todo_id>/create/', CommentCreateView.as_view(), name='comment_create'),
+    path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name='comment_update'),
+    path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment_delete'),
 ]

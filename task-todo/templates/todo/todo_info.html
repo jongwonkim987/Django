@@ -38,7 +38,7 @@
         <!-- 댓글 작성 폼 -->
         <div class="card mb-4">
             <div class="card-body">
-                <form method="POST" action="{% url 'cbv_comment_create' todo.id %}">
+                <form method="POST" action="{% url 'comment_create' todo.id %}">
                     {% csrf_token %}
                     <div class="mb-2">
                         <label class="form-label fw-semibold">{{ comment_form.message.label }}</label>
@@ -69,7 +69,7 @@
                                     수정
                                 </button>
                                 <!-- 삭제 버튼 (바로 삭제) -->
-                                <form method="POST" action="{% url 'cbv_comment_delete' comment.pk %}" class="m-0">
+                                <form method="POST" action="{% url 'comment_delete' comment.pk %}" class="m-0">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-outline-danger btn-sm">삭제</button>
                                 </form>
@@ -80,7 +80,7 @@
                     <!-- 수정 폼 (collapse 토글) -->
                     {% if comment.user == request.user or request.user.is_superuser %}
                         <div class="collapse mt-2" id="edit-form-{{ comment.pk }}">
-                            <form method="POST" action="{% url 'cbv_comment_update' comment.pk %}">
+                            <form method="POST" action="{% url 'comment_update' comment.pk %}">
                                 {% csrf_token %}
                                 <textarea name="message" class="form-control mb-2" rows="2">{{ comment.message }}</textarea>
                                 <button type="submit" class="btn btn-primary btn-sm">저장</button>
