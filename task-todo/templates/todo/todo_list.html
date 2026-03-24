@@ -9,7 +9,7 @@
             {% else %}
                 <h2 class="mb-0">All To Do List (By. Admin)</h2>
             {% endif %}
-            <a href="{% url 'cbv_todo_create' %}" class="btn btn-primary">생성하기</a>
+            <a href="{% url 'todo_create' %}" class="btn btn-primary">생성하기</a>
         </div>
 
         <form method="GET" class="d-flex gap-2 mb-3">
@@ -21,7 +21,7 @@
         <ul class="list-group mb-3">
             {% for todo in page_obj.object_list %}
                 <li class="list-group-item list-group-item-action">
-                    <a href="{% url 'cbv_todo_info' todo.id %}" class="text-decoration-none text-dark">
+                    <a href="{% url 'todo_detail' todo.id %}" class="text-decoration-none text-dark">
                         {{ todo.title }}
                     </a>
                 </li>

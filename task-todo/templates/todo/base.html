@@ -10,7 +10,7 @@
 </head>
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
-        <a class="navbar-brand fw-bold" href="{% url 'cbv_todo_list' %}">🏠 Home</a>
+        <a class="navbar-brand fw-bold" href="{% url 'todo_list' %}">🏠 Home</a>
         <div class="ms-auto d-flex align-items-center gap-2">
             {% if request.user.is_authenticated %}
                 <span class="text-white">{{ request.user.username }}</span>

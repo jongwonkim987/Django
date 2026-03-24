@@ -9,8 +9,8 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h4 class="mb-0">{{ todo.title }}</h4>
             <div class="d-flex gap-2">
-                <a href="{% url 'cbv_todo_update' todo.id %}" class="btn btn-warning btn-sm">수정하기</a>
-                <form method="POST" action="{% url 'cbv_todo_delete' todo.id %}" class="m-0">
+                <a href="{% url 'todo_update' todo.id %}" class="btn btn-warning btn-sm">수정하기</a>
+                <form method="POST" action="{% url 'todo_delete' todo.id %}" class="m-0">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger btn-sm">삭제하기</button>
                 </form>

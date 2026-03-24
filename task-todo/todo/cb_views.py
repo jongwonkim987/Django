@@ -27,7 +27,6 @@ class TodoListView(LoginRequiredMixin, ListView):
 
 
 class TodoDetailView(LoginRequiredMixin, DetailView):
-    model = Todo
     queryset = Todo.objects.all().prefetch_related('comments', 'comments__user')
     template_name = 'todo/todo_info.html'
 
@@ -60,7 +59,7 @@ class TodoCreateView(LoginRequiredMixin, CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse_lazy('cbv_todo_info', kwargs={'pk': self.object.id})
+        return reverse_lazy('todo_detail', kwargs={'pk': self.object.id})
 
 
 class TodoUpdateView(LoginRequiredMixin, UpdateView):
@@ -76,7 +75,7 @@ class TodoUpdateView(LoginRequiredMixin, UpdateView):
         return obj
 
     def get_success_url(self):
-        return reverse_lazy('cbv_todo_info', kwargs={'pk': self.object.id})
+        return reverse_lazy('todo_detail', kwargs={'pk': self.object.id})
 
 
 class TodoDeleteView(LoginRequiredMixin, DeleteView):
@@ -91,7 +90,7 @@ class TodoDeleteView(LoginRequiredMixin, DeleteView):
         return obj
 
     def get_success_url(self):
-        return reverse_lazy('cbv_todo_list')
+        return reverse_lazy('todo_list')
 
 
 class CommentCreateView(LoginRequiredMixin, CreateView):
@@ -108,7 +107,7 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse_lazy('cbv_todo_info', kwargs={'pk': self.kwargs['todo_id']})
+        return reverse_lazy('todo_detail', kwargs={'pk': self.kwargs['todo_id']})
 
 
 class CommentUpdateView(LoginRequiredMixin, UpdateView):
@@ -124,7 +123,7 @@ class CommentUpdateView(LoginRequiredMixin, UpdateView):
         return obj
 
     def get_success_url(self):
-        return reverse_lazy('cbv_todo_info', kwargs={'pk': self.object.todo.id})
+        return reverse_lazy('todo_detail', kwargs={'pk': self.object.todo.id})
 
 
 class CommentDeleteView(LoginRequiredMixin, DeleteView):
@@ -139,4 +138,4 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
         return obj
 
     def get_success_url(self):
-        return reverse_lazy('cbv_todo_list')
+        return reverse_lazy('todo_list')

@@ -12,12 +12,12 @@ from todo.cb_views import (
 )
 
 urlpatterns = [
-    # CBV
-    path('cbv/', TodoListView.as_view(), name='cbv_todo_list'),
-    path('cbv/<int:pk>/', TodoDetailView.as_view(), name='cbv_todo_info'),
-    path('cbv/create/', TodoCreateView.as_view(), name='cbv_todo_create'),
-    path('cbv/<int:pk>/update/', TodoUpdateView.as_view(), name='cbv_todo_update'),
-    path('cbv/<int:pk>/delete/', TodoDeleteView.as_view(), name='cbv_todo_delete'),
+    # Todo CBV
+    path('list/', TodoListView.as_view(), name='todo_list'),
+    path('<int:pk>/', TodoDetailView.as_view(), name='todo_detail'),
+    path('create/', TodoCreateView.as_view(), name='todo_create'),
+    path('<int:pk>/update/', TodoUpdateView.as_view(), name='todo_update'),
+    path('<int:pk>/delete/', TodoDeleteView.as_view(), name='todo_delete'),
 
     # Comment CBV
     path('comment/<int:todo_id>/create/', CommentCreateView.as_view(), name='comment_create'),

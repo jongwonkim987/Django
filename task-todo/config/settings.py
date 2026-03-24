@@ -118,9 +118,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [BASE_DIR / 'statics']
 STATIC_ROOT = BASE_DIR / '.statics_root'
 
 # login / logout
-LOGIN_REDIRECT_URL = '/todo/cbv/'
+LOGIN_REDIRECT_URL = '/todo/list/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
