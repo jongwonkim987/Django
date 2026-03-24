@@ -19,15 +19,30 @@
         <div class="card-body p-0">
             <table class="table table-bordered mb-0">
                 {% for key, value in todo.items %}
-                    <!-- todo.__dict__ 에서 사용하지 않을 값들은 if 조건절로 배제 -->
-                    {% if key != 'title' and key != 'id' and key != 'user_id' and key != '_state' %}
+                    <!-- title·id·user_id·_state·이미지 필드는 별도 처리 -->
+                    {% if key != 'title' and key != 'id' and key != 'user_id' and key != '_state' and key != 'completed_image' and key != 'thumbnail' %}
                         <tr>
                             <th class="bg-light w-25">{{ key }}</th>
-                            <td>{{ value }}</td>
+                            {% if key == 'description' %}
+                                <!-- Summernote HTML → safe 필터로 렌더링 -->
+                                <td>{{ value|safe }}</td>
+                            {% else %}
+                                <td>{{ value }}</td>
+                            {% endif %}
                         </tr>
                     {% endif %}
                 {% endfor %}
             </table>
+
+            <!-- 완료 이미지 표시 -->
+            {% if object.completed_image %}
+                <div class="p-3 border-top">
+                    <p class="fw-semibold mb-2">완료 이미지</p>
+                    <img src="{{ object.completed_image.url }}"
+                         alt="완료 이미지" class="img-fluid rounded"
+                         style="max-height: 300px;">
+                </div>
+            {% endif %}
         </div>
     </div>
 

@@ -30,17 +30,27 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # own app
+]
+
+OWN_APPS = [
     'todo',
     'users',
 ]
+
+THIRD_PARTY_APPS = [
+    'django_extensions',
+    'django_summernote',
+]
+
+# django_cleanup은 반드시 맨 마지막에 위치해야 합니다 (signal 처리 순서)
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + OWN_APPS + ['django_cleanup']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -120,6 +130,29 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'statics']
 STATIC_ROOT = BASE_DIR / '.statics_root'
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Summernote 설정
+SUMMERNOTE_CONFIG = {
+    'iframe': True,  # XSS 방지를 위해 iframe 모드 사용
+    'summernote': {
+        'width': '100%',
+        'height': '300px',
+        # codeview 제거 → JS/HTML 직접 편집 차단 (필수)
+        'toolbar': [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough', 'superscript', 'subscript']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']],
+            ['insert', ['link', 'picture']],
+            ['view', ['fullscreen']],  # 'codeview' 미포함
+        ],
+    },
+    'disable_attachment': False,
+}
 
 # login / logout
 LOGIN_REDIRECT_URL = '/todo/list/'

@@ -16,10 +16,13 @@ Including another URLconf
 """
 # config/urls.py
 from django.contrib import admin
-from django.urls import path, include  # include 추가
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('todo/', include('todo.urls')),  # todo/urls.py로 위임
+    path('summernote/', include('django_summernote.urls')),  # Summernote 파일 업로드 URL
+    path('todo/', include('todo.urls')),
     path('accounts/', include('users.urls')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # 개발환경 미디어 파일 서빙

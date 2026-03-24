@@ -6,7 +6,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.urls import reverse_lazy
 from django.db.models import Q
 from todo.models import Todo, Comment
-from todo.forms import CommentForm
+from todo.forms import CommentForm, TodoForm, TodoUpdateForm
 
 
 class TodoListView(LoginRequiredMixin, ListView):
@@ -49,8 +49,8 @@ class TodoDetailView(LoginRequiredMixin, DetailView):
 
 class TodoCreateView(LoginRequiredMixin, CreateView):
     model = Todo
-    fields = ['title', 'description', 'start_date', 'end_date']
-    template_name = 'todo/todo_create.html'
+    form_class = TodoForm
+    template_name = 'todo/todo_form.html'
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -64,8 +64,8 @@ class TodoCreateView(LoginRequiredMixin, CreateView):
 
 class TodoUpdateView(LoginRequiredMixin, UpdateView):
     model = Todo
-    fields = ['title', 'description', 'start_date', 'end_date', 'is_completed']
-    template_name = 'todo/todo_update.html'
+    form_class = TodoUpdateForm
+    template_name = 'todo/todo_form.html'
 
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
@@ -138,4 +138,5 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
         return obj
 
     def get_success_url(self):
-        return reverse_lazy('todo_list')
+        # 댓글 삭제 후 해당 Todo 상세 페이지로 복귀 (get_success_url은 delete() 전에 호출됨)
+        return reverse_lazy('todo_detail', kwargs={'pk': self.object.todo.id})
