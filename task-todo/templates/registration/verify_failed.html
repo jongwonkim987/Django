@@ -1,0 +1,26 @@
+<!-- templates/registration/verify_failed.html -->
+{% extends 'registration/base.html' %}
+
+{% block title %}이메일 인증 실패 - Todo App{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <div class="mb-3" style="font-size: 3rem;">❌</div>
+    <h2>인증 실패</h2>
+    <p class="text-muted">
+        {% if reason %}
+            {{ reason }}
+        {% else %}
+            유효하지 않은 인증 링크이거나 인증 링크가 만료되었습니다.
+        {% endif %}
+    </p>
+    <hr>
+    <p class="small text-muted mb-3">
+        인증 링크는 발급 후 <strong>1시간</strong> 동안만 유효합니다.<br>
+        다시 회원가입하여 새 인증 메일을 받으시거나,<br>
+        문제가 지속되면 관리자에게 문의해주세요.
+    </p>
+    <a href="{% url 'signup' %}" class="btn btn-outline-primary me-2">다시 가입하기</a>
+    <a href="{% url 'login' %}" class="btn btn-outline-secondary">로그인 페이지로</a>
+</div>
+{% endblock %}

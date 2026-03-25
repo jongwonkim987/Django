@@ -10,17 +10,22 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import json
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# secret.json 로드
+SECRET_CONFIG_PATH = BASE_DIR / '.secret_config' / 'secret.json'
+with open(SECRET_CONFIG_PATH) as f:
+    secrets = json.load(f)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-9&zzg=a-m6az9x^6+tx2jw@i%twe4@+dxqoeteucyl=m3-loy+'
+SECRET_KEY = secrets['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -154,6 +159,18 @@ SUMMERNOTE_CONFIG = {
     'disable_attachment': False,
 }
 
+# 커스텀 유저 모델
+AUTH_USER_MODEL = 'users.User'
+
 # login / logout
+LOGIN_URL = '/users/login/'             # LoginRequiredMixin 리다이렉트 대상
 LOGIN_REDIRECT_URL = '/todo/list/'
-LOGOUT_REDIRECT_URL = '/accounts/login/'
+LOGOUT_REDIRECT_URL = '/users/login/'
+
+# 이메일 설정 (Gmail SMTP)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = secrets['EMAIL']['HOST_USER']
+EMAIL_HOST_PASSWORD = secrets['EMAIL']['PASSWORD']

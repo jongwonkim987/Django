@@ -1,78 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <style>
-        /* 기본적인 스타일 초기화 */
-        body, html {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-        }
+<!-- templates/registration/signup.html -->
+{% extends 'registration/base.html' %}
 
-        /* 컨테이너 스타일 */
-        .container {
-            max-width: 400px;
-            margin: 50px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+{% block title %}회원가입 - Todo App{% endblock %}
 
-        /* 제목 스타일 */
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-        }
+{% block content %}
+<h2>회원가입</h2>
 
-        /* 폼 스타일 */
-        .signup-form {
-            display: flex;
-            flex-direction: column;
-        }
+<form method="POST" novalidate>
+    {% csrf_token %}
 
-        .signup-form p {
-            margin: 10px 0;
-        }
-
-        /* 입력 필드 스타일 */
-        input[type="text"], input[type="password"], input[type="email"], input[type="date"], select, textarea {
-            width: 93%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-
-        /* 버튼 스타일 */
-        .signup-button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 16px;
-        }
-
-        .signup-button:hover {
-            background-color: #0056b3;
-        }
-    </style>
-    <title>Sign Up</title>
-</head>
-<body>
-    <div class="container">
-        <h1>회원가입</h1>
-        <form method="POST" class="signup-form">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="signup-button">Sign Up</button>
-        </form>
+    <!-- 이메일 -->
+    <div class="mb-3">
+        <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold">이메일</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+            <div class="text-danger small mt-1">{{ form.email.errors|join:", " }}</div>
+        {% endif %}
     </div>
-</body>
-</html>
+
+    <!-- 이름 -->
+    <div class="mb-3">
+        <label for="{{ form.name.id_for_label }}" class="form-label fw-semibold">이름</label>
+        {{ form.name }}
+        {% if form.name.errors %}
+            <div class="text-danger small mt-1">{{ form.name.errors|join:", " }}</div>
+        {% endif %}
+    </div>
+
+    <!-- 비밀번호 -->
+    <div class="mb-3">
+        <label for="{{ form.password1.id_for_label }}" class="form-label fw-semibold">비밀번호</label>
+        {{ form.password1 }}
+        {% if form.password1.errors %}
+            <div class="text-danger small mt-1">{{ form.password1.errors|join:", " }}</div>
+        {% endif %}
+    </div>
+
+    <!-- 비밀번호 확인 -->
+    <div class="mb-4">
+        <label for="{{ form.password2.id_for_label }}" class="form-label fw-semibold">비밀번호 확인</label>
+        {{ form.password2 }}
+        {% if form.password2.errors %}
+            <div class="text-danger small mt-1">{{ form.password2.errors|join:", " }}</div>
+        {% endif %}
+    </div>
+
+    <!-- non_field_errors -->
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger py-2 small">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <button type="submit" class="btn btn-primary w-100">가입하기</button>
+</form>
+
+<p class="text-center mt-3 mb-0 small text-muted">
+    이미 계정이 있으신가요?
+    <a href="{% url 'login' %}">로그인</a>
+</p>
+{% endblock %}

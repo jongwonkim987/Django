@@ -24,5 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('summernote/', include('django_summernote.urls')),  # Summernote 파일 업로드 URL
     path('todo/', include('todo.urls')),
-    path('accounts/', include('users.urls')),
+    # path('accounts/', include('users.urls')),  # 기존 accounts/ 주석 처리
+    path('users/', include('users.urls')),        # 새로운 users/ 엔드포인트
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # 개발환경 미디어 파일 서빙
