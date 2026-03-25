@@ -18,27 +18,37 @@
         </div>
         <div class="card-body p-0">
             <table class="table table-bordered mb-0">
-                {% for key, value in todo.items %}
-                    <!-- title·id·user_id·_state·이미지 필드는 별도 처리 -->
-                    {% if key != 'title' and key != 'id' and key != 'user_id' and key != '_state' and key != 'completed_image' and key != 'thumbnail' %}
-                        <tr>
-                            <th class="bg-light w-25">{{ key }}</th>
-                            {% if key == 'description' %}
-                                <!-- Summernote HTML → safe 필터로 렌더링 -->
-                                <td>{{ value|safe }}</td>
-                            {% else %}
-                                <td>{{ value }}</td>
-                            {% endif %}
-                        </tr>
-                    {% endif %}
-                {% endfor %}
+                <tr>
+                    <th class="bg-light w-25">description</th>
+                    <td>{{ todo.description|safe }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-light w-25">start_date</th>
+                    <td>{{ todo.start_date }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-light w-25">end_date</th>
+                    <td>{{ todo.end_date }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-light w-25">is_completed</th>
+                    <td>{{ todo.is_completed }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-light w-25">created_at</th>
+                    <td>{{ todo.created_at }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-light w-25">updated_at</th>
+                    <td>{{ todo.updated_at }}</td>
+                </tr>
             </table>
 
             <!-- 완료 이미지 표시 -->
-            {% if object.completed_image %}
+            {% if todo.completed_image %}
                 <div class="p-3 border-top">
                     <p class="fw-semibold mb-2">완료 이미지</p>
-                    <img src="{{ object.completed_image.url }}"
+                    <img src="{{ todo.completed_image.url }}"
                          alt="완료 이미지" class="img-fluid rounded"
                          style="max-height: 300px;">
                 </div>

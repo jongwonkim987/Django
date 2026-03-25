@@ -29,6 +29,7 @@ class TodoListView(LoginRequiredMixin, ListView):
 class TodoDetailView(LoginRequiredMixin, DetailView):
     queryset = Todo.objects.all().prefetch_related('comments', 'comments__user')
     template_name = 'todo/todo_info.html'
+    context_object_name = 'todo'
 
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
@@ -41,7 +42,6 @@ class TodoDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         comments = self.object.comments.order_by('-created_at')
         paginator = Paginator(comments, 5)
-        context['todo'] = self.object.__dict__
         context['comment_form'] = CommentForm()
         context['page_obj'] = paginator.get_page(self.request.GET.get('page'))
         return context
