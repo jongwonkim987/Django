@@ -17,7 +17,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # secret.json 로드
-SECRET_CONFIG_PATH = BASE_DIR / '.secret_config' / 'secret.json'
+SECRET_CONFIG_PATH = BASE_DIR / 'config' / 'secret.json'
 with open(SECRET_CONFIG_PATH) as f:
     secrets = json.load(f)
 
