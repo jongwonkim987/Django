@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",  # DRF 추가
     "users.apps.UsersConfig",  # 커스텀 사용자 앱
+    "posts.apps.PostsConfig",  # posts 앱
 ]
 
 MIDDLEWARE = [
