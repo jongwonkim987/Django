@@ -3,20 +3,12 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# secret.json에서 환경 변수 로드
-secret_file = BASE_DIR / "secret.json"
-with open(secret_file) as f:
-    secrets = json.load(f)
+with open(BASE_DIR / "secret.json") as f:
+    secret = f.read()
 
+SECRET = json.loads(secret)
 
-def get_secret(setting, secrets=secrets):
-    try:
-        return secrets[setting]
-    except KeyError:
-        raise Exception(f"Set the {setting} environment variable in secret.json")
-
-
-SECRET_KEY = get_secret("SECRET_KEY")
+SECRET_KEY = SECRET["DJANGO_SECRET_KEY"]
 
 DEBUG = True
 
@@ -30,12 +22,13 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Third-party
+    "django_extensions",
     "rest_framework",
-    "django_cleanup.apps.CleanupConfig",  # django-cleanup (자동 미디어 파일 삭제)
+    "django_cleanup.apps.CleanupConfig",
     # Local
-    "users.apps.UsersConfig",
-    "restaurants.apps.RestaurantsConfig",
-    "reviews.apps.ReviewsConfig",
+    "users",
+    "restaurants",
+    "reviews",
 ]
 
 MIDDLEWARE = [
@@ -67,15 +60,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-# MySQL 데이터베이스 설정
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": get_secret("DB_NAME"),
-        "USER": get_secret("DB_USER"),
-        "PASSWORD": get_secret("DB_PASSWORD"),
-        "HOST": get_secret("DB_HOST"),
-        "PORT": get_secret("DB_PORT"),
+        "NAME": SECRET["DB"]["NAME"],
+        "USER": SECRET["DB"]["USER"],
+        "PASSWORD": SECRET["DB"]["PASSWORD"],
+        "HOST": SECRET["DB"]["HOST"],
+        "PORT": SECRET["DB"]["PORT"],
     }
 }
 
@@ -93,26 +85,24 @@ TIME_ZONE = "Asia/Seoul"
 USE_I18N = True
 USE_TZ = True
 
-# Static 파일 설정
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "static"
+# Static
+STATIC_URL = "static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / ".static_root"
 
-# Media 파일 설정
-MEDIA_URL = "/media/"
+# Media
+MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# 커스텀 사용자 모델
-AUTH_USER_MODEL = "users.CustomUser"
+# Auth
+AUTH_USER_MODEL = "users.User"
 
-# DRF 설정
+# DRF
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-    ],
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
     ],
 }

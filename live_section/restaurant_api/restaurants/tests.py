@@ -1,81 +1,158 @@
 from django.test import TestCase
-from rest_framework.test import APITestCase
-from rest_framework import status
 from django.urls import reverse
+from rest_framework.test import APITestCase
 
 from restaurants.models import Restaurant
 
 
 class RestaurantModelTest(TestCase):
     def setUp(self):
-        self.restaurant_data = {
-            "name": "테스트 식당",
-            "address": "서울시 강남구 테스트로 123",
-            "contact": "02-1234-5678",
-            "open_time": "09:00:00",
+        self.restaurant_info = {
+            "name": "Test Restaurant",
+            "description": "Test Description",
+            "address": "Test Address",
+            "contact": "Test Contact",
+            "open_time": "10:00:00",
             "close_time": "22:00:00",
-            "last_order": "21:30:00",
+            "last_order": "21:00:00",
             "regular_holiday": "MON",
         }
 
     def test_create_restaurant(self):
-        restaurant = Restaurant.objects.create(**self.restaurant_data)
-        self.assertEqual(restaurant.name, self.restaurant_data["name"])
-        self.assertEqual(restaurant.address, self.restaurant_data["address"])
-        self.assertEqual(restaurant.contact, self.restaurant_data["contact"])
-        self.assertEqual(str(restaurant.open_time), self.restaurant_data["open_time"])
-        self.assertEqual(str(restaurant.close_time), self.restaurant_data["close_time"])
-        self.assertEqual(str(restaurant.last_order), self.restaurant_data["last_order"])
+        restaurant = Restaurant.objects.create(**self.restaurant_info)
+
+        self.assertEqual(Restaurant.objects.count(), 1)
+        self.assertEqual(restaurant.name, self.restaurant_info["name"])
+        self.assertEqual(restaurant.description, self.restaurant_info["description"])
+        self.assertEqual(restaurant.address, self.restaurant_info["address"])
+        self.assertEqual(restaurant.contact, self.restaurant_info["contact"])
+        self.assertEqual(str(restaurant.open_time), self.restaurant_info["open_time"])
+        self.assertEqual(str(restaurant.close_time), self.restaurant_info["close_time"])
+        self.assertEqual(str(restaurant.last_order), self.restaurant_info["last_order"])
         self.assertEqual(
-            restaurant.regular_holiday, self.restaurant_data["regular_holiday"]
+            restaurant.regular_holiday, self.restaurant_info["regular_holiday"]
         )
-        self.assertIsNotNone(restaurant.created_at)
-        self.assertIsNotNone(restaurant.modified_at)
+        self.assertEqual(restaurant.__str__(), self.restaurant_info["name"])
 
 
 class RestaurantViewTestCase(APITestCase):
     def setUp(self):
-        self.restaurant = Restaurant.objects.create(
-            name="뷰 테스트 식당",
-            address="서울시 종로구 테스트로 456",
-            contact="02-9999-8888",
-        )
-        self.list_url = reverse("restaurant-list")
-        self.detail_url = reverse(
-            "restaurant-detail", kwargs={"pk": self.restaurant.pk}
-        )
+        self.restaurant_info = {
+            "name": "Test Restaurant",
+            "description": "Test Description",
+            "address": "Test Address",
+            "contact": "Test Contact",
+            "open_time": "10:00:00",
+            "close_time": "22:00:00",
+            "last_order": "21:00:00",
+            "regular_holiday": "MON",
+        }
 
     def test_restaurant_list_view(self):
-        response = self.client.get(self.list_url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        url = reverse("restaurant-list")
+        Restaurant.objects.create(**self.restaurant_info)
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data.get("results")), 1)
+        self.assertEqual(
+            response.data.get("results")[0].get("name"),
+            self.restaurant_info["name"],
+        )
+        self.assertEqual(
+            response.data.get("results")[0].get("description"),
+            self.restaurant_info["description"],
+        )
+        self.assertEqual(
+            response.data.get("results")[0].get("address"),
+            self.restaurant_info["address"],
+        )
+        self.assertEqual(
+            response.data.get("results")[0].get("contact"),
+            self.restaurant_info["contact"],
+        )
+        self.assertEqual(
+            response.data.get("results")[0].get("open_time"),
+            self.restaurant_info["open_time"],
+        )
+        self.assertEqual(
+            response.data.get("results")[0].get("close_time"),
+            self.restaurant_info["close_time"],
+        )
+        self.assertEqual(
+            response.data.get("results")[0].get("last_order"),
+            self.restaurant_info["last_order"],
+        )
+        self.assertEqual(
+            response.data.get("results")[0].get("regular_holiday"),
+            self.restaurant_info["regular_holiday"],
+        )
 
     def test_restaurant_post_view(self):
-        data = {
-            "name": "새 식당",
-            "address": "부산시 해운대구 테스트로 789",
-            "contact": "051-1234-5678",
-        }
-        response = self.client.post(self.list_url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Restaurant.objects.count(), 2)
+        url = reverse("restaurant-list")
+        response = self.client.post(url, self.restaurant_info, format="json")
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Restaurant.objects.count(), 1)
+        self.assertEqual(Restaurant.objects.first().name, self.restaurant_info["name"])
 
     def test_restaurant_detail_view(self):
-        response = self.client.get(self.detail_url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["name"], self.restaurant.name)
+        restaurant = Restaurant.objects.create(**self.restaurant_info)
+        url = reverse("restaurant-detail", kwargs={"pk": restaurant.id})
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.get("name"), self.restaurant_info["name"])
 
     def test_restaurant_update_view(self):
-        data = {
-            "name": "수정된 식당",
-            "address": self.restaurant.address,
-            "contact": self.restaurant.contact,
+        restaurant = Restaurant.objects.create(**self.restaurant_info)
+        url = reverse("restaurant-detail", kwargs={"pk": restaurant.id})
+        updated_restaurant_info = {
+            "name": "Updated Restaurant",
+            "description": "Updated Description",
+            "address": "Updated Address",
+            "contact": "Updated Contact",
+            "open_time": "11:00:00",
+            "close_time": "23:00:00",
+            "last_order": "22:00:00",
+            "regular_holiday": "TUE",
         }
-        response = self.client.put(self.detail_url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.restaurant.refresh_from_db()
-        self.assertEqual(self.restaurant.name, "수정된 식당")
+
+        response = self.client.put(url, updated_restaurant_info, format="json")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Restaurant.objects.count(), 1)
+        self.assertEqual(response.data.get("name"), updated_restaurant_info["name"])
+        self.assertEqual(
+            response.data.get("description"), updated_restaurant_info["description"]
+        )
+        self.assertEqual(
+            response.data.get("address"), updated_restaurant_info["address"]
+        )
+        self.assertEqual(
+            response.data.get("contact"), updated_restaurant_info["contact"]
+        )
+        self.assertEqual(
+            response.data.get("open_time"), updated_restaurant_info["open_time"]
+        )
+        self.assertEqual(
+            response.data.get("close_time"), updated_restaurant_info["close_time"]
+        )
+        self.assertEqual(
+            response.data.get("last_order"), updated_restaurant_info["last_order"]
+        )
+        self.assertEqual(
+            response.data.get("regular_holiday"),
+            updated_restaurant_info["regular_holiday"],
+        )
 
     def test_restaurant_delete_view(self):
-        response = self.client.delete(self.detail_url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        restaurant = Restaurant.objects.create(**self.restaurant_info)
+        url = reverse("restaurant-detail", kwargs={"pk": restaurant.id})
+
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(Restaurant.objects.count(), 0)

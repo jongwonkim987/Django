@@ -6,29 +6,43 @@ User = get_user_model()
 
 class UserModelTest(TestCase):
     def setUp(self):
-        self.email = "test@example.com"
-        self.nickname = "testuser"
-        self.password = "testpassword123"
+        self.test_user = {
+            "email": "test@example.com",
+            "nickname": "testuser",
+            "password": "password1234",
+        }
+
+        self.test_admin_user = {
+            "email": "admin@example.com",
+            "nickname": "adminuser",
+            "password": "password1234",
+        }
 
     def test_user_manager_create_user(self):
-        user = User.objects.create_user(
-            email=self.email,
-            nickname=self.nickname,
-            password=self.password,
-        )
-        self.assertEqual(user.email, self.email)
-        self.assertEqual(user.nickname, self.nickname)
-        self.assertTrue(user.check_password(self.password))
-        self.assertTrue(user.is_active)
+        user = User.objects.create_user(**self.test_user)
+
+        self.assertEqual(User.objects.all().count(), 1)
+
+        self.assertEqual(user.email, self.test_user["email"])
+        self.assertEqual(user.nickname, self.test_user["nickname"])
+        self.assertTrue(user.check_password(self.test_user["password"]))
         self.assertFalse(user.is_staff)
         self.assertFalse(user.is_superuser)
+        self.assertTrue(user.is_active)
+        self.assertEqual(user.profile_image.url, "/media/users/blank_profile_image.png")
 
     def test_user_manager_create_superuser(self):
-        superuser = User.objects.create_superuser(
-            email="admin@example.com",
-            nickname="adminuser",
-            password=self.password,
+        admin_user = User.objects.create_superuser(**self.test_admin_user)
+
+        self.assertEqual(
+            User.objects.filter(is_superuser=True, is_staff=True).count(), 1
         )
-        self.assertTrue(superuser.is_staff)
-        self.assertTrue(superuser.is_superuser)
-        self.assertTrue(superuser.check_password(self.password))
+        self.assertEqual(admin_user.email, self.test_admin_user["email"])
+        self.assertEqual(admin_user.nickname, self.test_admin_user["nickname"])
+        self.assertTrue(admin_user.check_password(self.test_admin_user["password"]))
+        self.assertTrue(admin_user.is_staff)
+        self.assertTrue(admin_user.is_superuser)
+        self.assertTrue(admin_user.is_active)
+        self.assertEqual(
+            admin_user.profile_image.url, "/media/users/blank_profile_image.png"
+        )

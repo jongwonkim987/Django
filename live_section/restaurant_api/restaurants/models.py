@@ -2,7 +2,6 @@ from django.db import models
 
 from config.models import BaseModel
 
-
 DAYS_OF_WEEK = [
     ("MON", "Monday"),
     ("TUE", "Tuesday"),
@@ -16,6 +15,7 @@ DAYS_OF_WEEK = [
 
 class Restaurant(BaseModel):
     name = models.CharField(max_length=50)
+    description = models.TextField(null=True, blank=True)
     address = models.CharField(max_length=200)
     contact = models.CharField(max_length=50)
     open_time = models.TimeField(null=True, blank=True)
