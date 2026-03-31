@@ -1,0 +1,22 @@
+# Django
+*.pyc
+__pycache__/
+*.pyo
+db.sqlite3
+media/
+static/
+
+# Secret
+secret.json
+.env
+
+# Python
+.venv/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.DS_Store
