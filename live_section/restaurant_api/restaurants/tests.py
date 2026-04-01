@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -37,6 +38,10 @@ class RestaurantModelTest(TestCase):
 
 class RestaurantViewTestCase(APITestCase):
     def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            email="test@example.com", password="password1234"
+        )
+        self.client.login(email="test@example.com", password="password1234")
         self.restaurant_info = {
             "name": "Test Restaurant",
             "description": "Test Description",
