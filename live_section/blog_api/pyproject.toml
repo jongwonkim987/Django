@@ -7,6 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "django==4.2.23",
     "djangorestframework==3.16",
+    "djangorestframework-simplejwt>=5.5.1",
     "psycopg2-binary>=2.9.11",
     "python-dotenv>=1.2.2",
 ]
@@ -34,6 +35,9 @@ select = [
 ]
 ignore = ["E203"]  # black과 호환성 위해
 fixable = ["ALL"]  # 모든 수정 가능한 문제 자동 수정
+
+[tool.ruff.lint.per-file-ignores]
+"**/settings/*.py" = ["F403", "F405"]
 
 [tool.ruff.format]
 quote-style = "double"  # black과 일치

@@ -497,3 +497,5 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,python,visualstudiocode,django,intellij+all,pycharm+all,venv
+# Settings symbolic link
+config/settings/settings.py

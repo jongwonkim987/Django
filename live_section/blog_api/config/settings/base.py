@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -17,8 +18,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",  # DRF 추가
+    "rest_framework_simplejwt",  # simplejwt 추가
     "users.apps.UsersConfig",  # 커스텀 사용자 앱
     "posts.apps.PostsConfig",  # posts 앱
+    "comments.apps.CommentsConfig",  # 새 앱 추가
 ]
 
 MIDDLEWARE = [
@@ -74,9 +77,10 @@ STATIC_ROOT = BASE_DIR / "static"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# DRF 설정 (베스트 프랙티스: 기본 인증과 권한 설정)
+# DRF 설정 (JWT 인증, throttling, pagination 베스트 프랙티스)
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ],
@@ -85,7 +89,22 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "100/day",
+        "user": "1000/day",
+    },
 }
 
 # 커스텀 사용자 모델 (초기 설정 베스트 프랙티스)
 AUTH_USER_MODEL = "users.CustomUser"  # django 기본 authentication, authorization
+
+# JWT 설정
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "UPDATE_LAST_LOGIN": True,
+}
